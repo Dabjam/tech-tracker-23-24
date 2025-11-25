@@ -31,3 +31,77 @@
 .add-form button:hover {
     background-color: #2980b9;
 }
+
+/* src/App.css (в самый низ) */
+
+/* Стили для роутинга */
+.detail-container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    text-decoration: none;
+    color: #3498db;
+    font-weight: bold;
+}
+
+.technology-header h1 {
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.detail-section {
+    margin-bottom: 25px;
+    padding: 15px;
+    border-left: 3px solid #3498db;
+    background: #f9f9f9;
+}
+
+.status-buttons button {
+    padding: 10px 15px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    background: #fff;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.status-buttons button.active {
+    color: white;
+    font-weight: bold;
+}
+/* Цвета для активных кнопок */
+.status-buttons button:nth-child(1).active { background-color: #FF5722; border-color: #FF5722; } /* not-started */
+.status-buttons button:nth-child(2).active { background-color: #2196F3; border-color: #2196F3; } /* in-progress */
+.status-buttons button:nth-child(3).active { background-color: #4CAF50; border-color: #4CAF50; } /* completed */
+
+
+/* Стили для API (загрузка/ошибка) */
+.loading-state, .error-state {
+    text-align: center;
+    padding: 50px;
+    font-size: 1.2em;
+    color: #555;
+}
+
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
