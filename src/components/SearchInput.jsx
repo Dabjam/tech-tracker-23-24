@@ -1,5 +1,7 @@
 // src/components/SearchInput.jsx
 
+import React from 'react'; // <--- Важно импортировать React
+
 function SearchInput({ searchQuery, onSearchChange, resultCount }) {
     return (
         <div className="search-input-container">
@@ -16,4 +18,5 @@ function SearchInput({ searchQuery, onSearchChange, resultCount }) {
     );
 }
 
-export default SearchInput;
+// *** Оборачиваем в React.memo для стабилизации и сохранения фокуса ***
+export default React.memo(SearchInput);

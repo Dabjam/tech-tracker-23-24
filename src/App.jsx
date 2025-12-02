@@ -1,3 +1,5 @@
+// src/App.jsx (Финальная версия Пр. 23-24)
+
 import React, { useState, useMemo, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
@@ -6,6 +8,7 @@ import QuickActions from './components/QuickActions';
 import FilterControls from './components/FilterControls';
 import SearchInput from './components/SearchInput';
 // Импорт страниц
+import Home from './pages/Home'; // <<< НОВЫЙ ИМПОРТ
 import Statistics from './pages/Statistics';
 import Settings from './pages/Settings';
 
@@ -25,7 +28,7 @@ function App() {
     const [activeFilter, setActiveFilter] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
 
-    // --- Логика API и Загрузка данных (Пр. 24) ---
+    // --- Логика API и Загрузка данных ---
     useEffect(() => {
         setIsLoading(true);
         setError(null);
@@ -44,7 +47,7 @@ function App() {
         return () => clearTimeout(timer);
     }, []);
 
-    // --- Debounce для поиска (Пр. 24) ---
+    // --- Debounce для поиска ---
     const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
     // --- Логика Обновления и Действий ---
@@ -66,7 +69,7 @@ function App() {
     const markAllCompleted = () => { setTechnologies(prevTech => prevTech.map(tech => ({ ...tech, status: 'completed' }))); };
     const resetAllStatuses = () => { setTechnologies(prevTech => prevTech.map(tech => ({ ...tech, status: 'not-started' }))); };
 
-    const handleExportData = () => { /* ... (логика экспорта) ... */
+    const handleExportData = () => { 
         const dataStr = JSON.stringify(technologies, null, 2);
         const blob = new Blob([dataStr], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
@@ -80,6 +83,16 @@ function App() {
         alert('Данные экспортированы в technology_tracker_export.json');
     };
 
+    // --- Стабильные обработчики для Home.jsx ---
+    const handleFilterChange = (val) => {
+        setSearchQuery(''); 
+        setActiveFilter(val);
+    }
+
+    const handleSearchChange = (val) => {
+        setSearchQuery(val);
+    }
+    
     // --- Логика Фильтрации и Поиска ---
     const filteredResults = useMemo(() => {
         if (isLoading) return [];
@@ -104,67 +117,28 @@ function App() {
     const totalCount = technologies.length;
     const progressPercentage = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
 
-    // --- Компонент Главной страницы ---
-    const HomePage = () => {
-        if (isLoading) return <div className="loading-state">⏳ Загрузка данных из API...</div>;
-        if (error) return <div className="error-state">❌ Ошибка: {error}</div>;
-
-        return (
-            <main className="main-content">
-                <section className="controls-section">
-                    <QuickActions 
-                        onMarkAllCompleted={markAllCompleted}
-                        onResetAllStatuses={resetAllStatuses}
-                        onExportData={handleExportData}
-                    />
-                    
-                    <div className="filter-and-search">
-                        <FilterControls 
-                            activeFilter={activeFilter}
-                            onFilterChange={(val) => {
-                                // Важно: Сброс поиска при смене фильтра
-                                setSearchQuery(''); 
-                                setActiveFilter(val);
-                            }}
-                        />
-                        {/* Здесь нет сброса, только обновление поискового запроса */}
-                        <SearchInput 
-                            searchQuery={searchQuery}
-                            onSearchChange={setSearchQuery} 
-                            resultCount={filteredResults.length}
-                        />
-                    </div>
-                </section>
-
-                <section className="technology-list-section">
-                    <h2 className="section-title">
-                        Список технологий ({filteredResults.length} из {totalCount})
-                    </h2>
-                    <div className="technology-list">
-                        {filteredResults.map(tech => (
-                            <TechnologyCard 
-                                key={tech.id} 
-                                tech={tech} 
-                                onToggleStatus={toggleTechnologyStatus} 
-                            />
-                        ))}
-                    </div>
-                    {filteredResults.length === 0 && (
-                        <p className="no-results">
-                            Нет результатов, соответствующих критериям.
-                        </p>
-                    )}
-                </section>
-            </main>
-        );
-    };
-
     return (
         <div className="app-container">
             <Header progressPercentage={progressPercentage} />
             
             <Routes>
-                <Route path="/" element={<HomePage />} />
+                <Route 
+                    path="/" 
+                    element={<Home 
+                        isLoading={isLoading} 
+                        error={error} 
+                        technologies={technologies}
+                        activeFilter={activeFilter}
+                        searchQuery={searchQuery}
+                        filteredResults={filteredResults}
+                        onToggleStatus={toggleTechnologyStatus}
+                        onFilterChange={handleFilterChange}
+                        onSearchChange={handleSearchChange}
+                        onMarkAllCompleted={markAllCompleted}
+                        onResetAllStatuses={resetAllStatuses}
+                        onExportData={handleExportData}
+                    />} 
+                />
                 <Route path="/statistics" element={<Statistics technologies={technologies} />} />
                 <Route path="/settings" element={<Settings onResetAllStatuses={resetAllStatuses} />} />
             </Routes>
