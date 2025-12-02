@@ -1,31 +1,29 @@
-import './TechnologyCard.css';
+import React from 'react';
 
-function TechnologyCard({ title, description, status, onStatusChange }) {
-  
-  const getStatusClass = (status) => {
-    switch(status) {
-      case 'completed': return 'status-completed';
-      case 'in-progress': return 'status-in-progress';
-      default: return 'status-not-started';
-    }
-  };
+function TechnologyCard({ tech, onToggleStatus }) { 
+    
+    // Объект для отображения текста статуса
+    const statusText = {
+        'not-started': 'Не начато',
+        'in-progress': 'В процессе',
+        'completed': 'Выполнено'
+    };
 
-  return (
-    <div 
-      className={`technology-card ${getStatusClass(status)}`}
-      onClick={onStatusChange} 
-      style={{ cursor: 'pointer' }} 
-      title="Нажмите, чтобы изменить статус"
-    >
-      <h3>{title}</h3>
-      <p>{description}</p>
-      <div className="card-footer">
-         <span className={`status-badge ${getStatusClass(status)}`}>
-           {status}
-         </span>
-      </div>
-    </div>
-  );
+    // Класс для стилизации карточки и индикатора статуса
+    const statusClass = `status-${tech.status}`;
+
+    return (
+        <div 
+            className={`tech-card ${statusClass}`} 
+            onClick={() => onToggleStatus(tech.id)}
+        >
+            <h3 className="card-title">{tech.title}</h3> 
+            <p className="card-category">{tech.category}</p>
+            <span className="card-status">
+                {statusText[tech.status]}
+            </span>
+        </div>
+    );
 }
 
 export default TechnologyCard;
