@@ -1,26 +1,76 @@
-// src/pages/Settings.jsx
+// src/pages/Settings.js
 
-import React from 'react';
+import React, { useState } from 'react';
 
-function Settings({ onResetAllStatuses }) {
+function Settings() {
+    const [theme, setTheme] = useState(localStorage.getItem('appTheme') || 'light');
+    const [notifications, setNotifications] = useState(JSON.parse(localStorage.getItem('notificationsEnabled') || 'true'));
+
+    const handleThemeChange = (newTheme) => {
+        setTheme(newTheme);
+        localStorage.setItem('appTheme', newTheme);
+        document.body.className = `${newTheme}-theme`; // Для применения CSS-класса
+    };
+
+    const handleNotificationsToggle = (e) => {
+        const newState = e.target.checked;
+        setNotifications(newState);
+        localStorage.setItem('notificationsEnabled', JSON.stringify(newState));
+        alert(`Уведомления ${newState ? 'включены' : 'выключены'}.`);
+    };
+
     return (
-        <div className="page-container">
-            <h1>⚙️ Настройки приложения</h1>
-            <div className="settings-panel">
-                <p>Управление данными приложения:</p>
+        <div className="settings-page">
+            <h2>⚙️ Настройки приложения</h2>
+
+            <div className="setting-group">
+                <h3>Внешний вид</h3>
+                <label>Тема:</label>
+                <div className="theme-buttons">
+                    <button 
+                        onClick={() => handleThemeChange('light')} 
+                        className={`btn ${theme === 'light' ? 'btn-active' : ''}`}
+                    >
+                        Светлая
+                    </button>
+                    <button 
+                        onClick={() => handleThemeChange('dark')} 
+                        className={`btn ${theme === 'dark' ? 'btn-active' : ''}`}
+                        style={{ marginLeft: '10px' }}
+                    >
+                        Темная (Имитация)
+                    </button>
+                </div>
+            </div>
+
+            <div className="setting-group">
+                <h3>Уведомления</h3>
+                <label className="switch">
+                    <input 
+                        type="checkbox" 
+                        checked={notifications} 
+                        onChange={handleNotificationsToggle} 
+                    />
+                    <span className="slider round"></span>
+                </label>
+                <span style={{ marginLeft: '10px' }}>
+                    {notifications ? 'Уведомления включены' : 'Уведомления выключены'}
+                </span>
+            </div>
+
+            <div className="setting-group">
+                <h3>Управление данными</h3>
                 <button 
-                    className="btn btn-danger large-btn"
-                    onClick={() => {
-                        if (window.confirm("Вы уверены? Это сбросит все статусы технологий!")) {
-                            onResetAllStatuses();
+                    onClick={() => { 
+                        if (window.confirm('Вы уверены? Это удалит все данные!')) {
+                            localStorage.removeItem('techTrackerData');
+                            window.location.reload();
                         }
-                    }}
+                    }} 
+                    className="btn btn-danger"
                 >
-                    Сбросить все статусы
+                    Сбросить все данные (localStorage)
                 </button>
-                <p className="note mt-20">
-                    {/* * Этот пункт сбросит прогресс всех технологий в состояние "Не начато". */}
-                </p>
             </div>
         </div>
     );

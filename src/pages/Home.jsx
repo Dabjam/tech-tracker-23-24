@@ -1,65 +1,43 @@
-// src/pages/Home.jsx
+// src/pages/Home.js
 
 import React from 'react';
-import QuickActions from '../components/QuickActions';
-import FilterControls from '../components/FilterControls';
-import SearchInput from '../components/SearchInput';
-import TechnologyCard from '../components/TechnologyCard';
+import { Link } from 'react-router-dom';
+import useTechnologiesApi from '../hooks/useTechnologiesApi';
 
-function Home({ 
-    isLoading, error, technologies, activeFilter, 
-    onToggleStatus, onFilterChange, searchQuery, 
-    onSearchChange, filteredResults, onMarkAllCompleted, 
-    onResetAllStatuses, onExportData
-}) {
-    
+function Home() {
+    const { technologies } = useTechnologiesApi();
+
+    const completedCount = technologies.filter(tech => tech.status === 'completed').length;
     const totalCount = technologies.length;
-
-    if (isLoading) return <div className="loading-state">⏳ Загрузка данных из API...</div>;
-    if (error) return <div className="error-state">❌ Ошибка: {error}</div>;
-
+    const progressPercentage = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
+    
     return (
-        <main className="main-content">
-            <section className="controls-section">
-                <QuickActions 
-                    onMarkAllCompleted={onMarkAllCompleted}
-                    onResetAllStatuses={onResetAllStatuses}
-                    onExportData={onExportData}
-                />
-                
-                <div className="filter-and-search">
-                    <FilterControls 
-                        activeFilter={activeFilter}
-                        onFilterChange={onFilterChange}
-                    />
-                    <SearchInput 
-                        searchQuery={searchQuery}
-                        onSearchChange={onSearchChange}
-                        resultCount={filteredResults.length}
-                    />
+        <div className="home-page">
+            <h2 style={{ fontSize: '24px', marginBottom: '15px' }}>Добро пожаловать в Трекер Технологий!</h2>
+            
+            <div className="progress-card">
+                <h3>Ваш общий прогресс</h3>
+                <p style={{ fontSize: '32px', fontWeight: 'bold', color: '#4a90e2', margin: '10px 0' }}>
+                    {progressPercentage.toFixed(1)}%
+                </p>
+                <p>Вы изучили **{completedCount}** из **{totalCount}** запланированных технологий.</p>
+                <div className="progress-bar-container" style={{ margin: '15px 0', height: '15px' }}>
+                    <div 
+                        className="progress-bar" 
+                        style={{ width: `${progressPercentage}%`, background: '#50e3c2', borderRadius: '5px' }}
+                    ></div> 
                 </div>
-            </section>
+            </div>
 
-            <section className="technology-list-section">
-                <h2 className="section-title">
-                    Список технологий ({filteredResults.length} из {totalCount})
-                </h2>
-                <div className="technology-list">
-                    {filteredResults.map(tech => (
-                        <TechnologyCard 
-                            key={tech.id} 
-                            tech={tech} 
-                            onToggleStatus={onToggleStatus} 
-                        />
-                    ))}
-                </div>
-                {filteredResults.length === 0 && (
-                    <p className="no-results">
-                        Нет результатов, соответствующих критериям.
-                    </p>
-                )}
-            </section>
-        </main>
+            <div className="home-links">
+                <Link to="/technologies" className="btn btn-info">Перейти к списку</Link>
+                <Link to="/stats" className="btn btn-warning">Посмотреть статистику</Link>
+            </div>
+            
+            <p style={{ marginTop: '20px', color: '#666' }}>
+                Используйте навигацию выше, чтобы начать работу с трекером.
+            </p>
+        </div>
     );
 }
 

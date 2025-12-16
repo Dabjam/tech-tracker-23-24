@@ -1,5 +1,3 @@
-// src/data/initialData.js
-
 export const INITIAL_DATA = [
     {
         id: 1,
