@@ -1,11 +1,8 @@
-// src/pages/AddTechnology.jsx
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useTechnologiesApi from '../hooks/useTechnologiesApi';
 
 function AddTechnology() {
-    // Получаем функцию добавления технологии из хука
     const { addTechnology } = useTechnologiesApi(); 
     const navigate = useNavigate();
 
@@ -33,7 +30,6 @@ function AddTechnology() {
         setIsSubmitting(true);
         
         try {
-            // Преобразуем строку ресурсов в массив
             const resourcesArray = formData.resources 
                 ? formData.resources.split(',').map(res => res.trim()).filter(res => res !== '')
                 : [];
@@ -48,15 +44,12 @@ function AddTechnology() {
                 resources: resourcesArray
             };
 
-            // Проверка обязательных полей
             if (!newTech.title || !newTech.category) {
                 throw new Error('Название и категория обязательны для заполнения');
             }
 
-            // Вызываем функцию добавления и ждем ее завершения
             await addTechnology(newTech);
             
-            // Сброс формы
             setFormData({
                 title: '',
                 category: '',
@@ -67,7 +60,6 @@ function AddTechnology() {
                 resources: ''
             });
             
-            // Перенаправляем пользователя на список технологий
             navigate('/technologies');
             
         } catch (err) {

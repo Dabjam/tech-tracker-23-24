@@ -15,7 +15,8 @@ function TechnologyList() {
         loading, 
         error, 
         addTechnology, 
-        deleteTechnology, // Добавлено: функция удаления
+        deleteTechnology,
+        batchAddTechnologies, // Добавляем новую функцию
         markAllCompleted,
         resetAllStatuses,
         exportTechnologiesAsJson
@@ -44,7 +45,9 @@ function TechnologyList() {
     }, [technologies, activeFilter, searchTerm]);
 
     const handleDelete = (techId) => {
-        deleteTechnology(techId);
+        if (window.confirm('Удалить эту технологию?')) {
+            deleteTechnology(techId);
+        }
     };
 
     if (loading) return <div className="loading-state">Загрузка технологий...</div>;
@@ -78,7 +81,10 @@ function TechnologyList() {
                     onResetAllStatuses={resetAllStatuses}
                     onExportData={exportTechnologiesAsJson}
                 />
-                <RoadmapImporter addTechnology={addTechnology} />
+                <RoadmapImporter 
+                    addTechnology={addTechnology}
+                    batchAddTechnologies={batchAddTechnologies} // Передаем новую функцию
+                />
             </div>
 
             <div className="technology-list">
@@ -86,7 +92,7 @@ function TechnologyList() {
                     <TechnologyCard 
                         key={tech.id} 
                         tech={tech}
-                        onDelete={handleDelete} // Передаем функцию удаления
+                        onDelete={handleDelete}
                     />
                 ))}
             </div>

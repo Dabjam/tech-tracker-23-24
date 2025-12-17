@@ -1,5 +1,3 @@
-// src/components/TechnologyCard.jsx
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -14,15 +12,14 @@ function TechnologyCard({ tech, onDelete }) {
     const statusClass = `status-${tech.status}`;
 
     const handleDelete = (e) => {
-        e.preventDefault(); // Предотвращаем переход по ссылке
-        e.stopPropagation(); // Останавливаем всплытие
+        e.preventDefault();
+        e.stopPropagation();
         if (window.confirm(`Удалить технологию "${tech.title}"?`)) {
             onDelete(tech.id);
         }
     };
 
     return (
-        // Используем Link для перехода на страницу деталей
         <Link to={`/technology/${tech.id}`} className={`tech-card ${statusClass}`}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <h3 className="card-title">{tech.title}</h3>
@@ -57,4 +54,4 @@ function TechnologyCard({ tech, onDelete }) {
     );
 }
 
-export default TechnologyCard;  
+export default TechnologyCard;
