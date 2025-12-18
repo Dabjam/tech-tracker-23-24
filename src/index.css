@@ -215,3 +215,58 @@ body {
     .app-container { padding: 10px; }
     h1 { font-size: 1.5rem !important; }
 }
+
+:root {
+    /* Светлая тема (по умолчанию) */
+    --color-bg: #f7f9fc;
+    --color-card-bg: #ffffff;
+    --color-text: #1a1a1a;
+    --border-color: #e0e0e0;
+    /* ... остальные переменные */
+}
+
+body.dark-theme {
+    --color-bg: #0f172a;
+    --color-card-bg: #1e293b;
+    --color-text: #f8fafc;
+    --color-subtext: #94a3b8;
+    --border-color: #334155;
+    --color-primary: #818cf8;
+}
+
+body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+:root {
+    --color-primary: #5a7dff;
+    --color-bg: #f7f9fc;
+    --color-card-bg: #ffffff;
+    --color-text: #1a1a1a;
+    --color-subtext: #505050;
+    --border-color: #e0e0e0;
+}
+
+.dark-theme {
+    --color-bg: #0f172a;
+    --color-card-bg: #1e293b;
+    --color-text: #f8fafc;
+    --color-subtext: #94a3b8;
+    --border-color: #334155;
+    --color-primary: #818cf8;
+}
+
+body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    transition: background 0.3s, color 0.3s;
+}
+
+/* Глобальный стиль для кнопок, чтобы они не были белыми в темной теме */
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--color-text);
+}

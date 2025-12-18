@@ -7,23 +7,17 @@ function TechnologyDetail() {
     const navigate = useNavigate();
     const { technologies, setTechnologies } = useTechnologiesApi();
     
-    // Состояние режима редактирования
     const [isEditing, setIsEditing] = useState(false);
-    
-    // Поиск конкретной технологии в базе
     const tech = technologies.find(t => t.id.toString() === techId?.toString());
-    
-    // Локальное состояние для полей формы
     const [editData, setEditData] = useState(null);
 
-    // Загружаем данные в форму, когда технология найдена
     useEffect(() => {
         if (tech) setEditData({ ...tech });
     }, [tech]);
 
     if (!tech || !editData) {
         return (
-            <div style={{ textAlign: 'center', padding: '50px' }}>
+            <div style={{ textAlign: 'center', padding: '50px', color: 'var(--color-text)' }}>
                 <h2>⚠️ Технология не найдена</h2>
                 <Link to="/technologies" className="btn btn-primary">Вернуться к списку</Link>
             </div>
@@ -36,115 +30,133 @@ function TechnologyDetail() {
         setIsEditing(false);
     };
 
-    return (
-        <div style={{ maxWidth: '800px', margin: '40px auto', padding: '0 20px' }}>
-            <Link to="/technologies" style={{ color: '#64748b', textDecoration: 'none', marginBottom: '20px', display: 'inline-block' }}>
-                ← Назад к списку
-            </Link>
+    // Динамические стили, учитывающие тему
+    const containerStyle = {
+        maxWidth: '800px',
+        margin: '20px auto',
+        padding: '30px',
+        background: 'var(--color-card-bg)',
+        borderRadius: '20px',
+        border: '1px solid var(--border-color)',
+        color: 'var(--color-text)',
+        boxShadow: 'var(--shadow-light)'
+    };
 
-            <div style={{ backgroundColor: '#fff', borderRadius: '24px', border: '1px solid #e2e8f0', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
-                
-                {/* Шапка контента */}
-                <div style={{ padding: '30px', borderBottom: '1px solid #f1f5f9', background: isEditing ? '#f8fafc' : '#fff' }}>
-                    {!isEditing ? (
+    const inputStyle = {
+        width: '100%',
+        padding: '12px',
+        borderRadius: '10px',
+        border: '1px solid var(--border-color)',
+        background: 'var(--color-bg)',
+        color: 'var(--color-text)',
+        fontSize: '16px',
+        boxSizing: 'border-box',
+        outline: 'none',
+        marginBottom: '15px'
+    };
+
+    const labelStyle = {
+        display: 'block',
+        fontSize: '13px',
+        fontWeight: '700',
+        color: 'var(--color-subtext)',
+        marginBottom: '5px',
+        textTransform: 'uppercase'
+    };
+
+    return (
+        <div style={{ padding: '20px' }}>
+            <div style={containerStyle}>
+                <div style={{ marginBottom: '20px' }}>
+                    <Link to="/technologies" style={{ color: 'var(--color-primary)', textDecoration: 'none' }}>← Назад к списку</Link>
+                </div>
+
+                {!isEditing ? (
+                    /* РЕЖИМ ПРОСМОТРА */
+                    <div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                             <div>
-                                <span style={statusBadgeStyle(tech.status)}>{formatStatus(tech.status)}</span>
-                                <h1 style={{ margin: '15px 0 5px', fontSize: '32px' }}>{tech.title}</h1>
-                                <p style={{ color: '#2563eb', fontWeight: '600', margin: 0 }}>{tech.category}</p>
+                                <h1 style={{ margin: 0 }}>{tech.title}</h1>
+                                <p style={{ color: 'var(--color-subtext)', fontSize: '18px' }}>{tech.category}</p>
                             </div>
-                            <button onClick={() => setIsEditing(true)} className="btn btn-outline" style={{ padding: '8px 20px' }}>
-                                ✏️ Редактировать
-                            </button>
+                            <button onClick={() => setIsEditing(true)} className="btn btn-primary">✏️ Редактировать</button>
                         </div>
-                    ) : (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                            <h2>Редактирование</h2>
-                            <label style={labelStyle}>Название технологии</label>
-                            <input 
-                                style={inputStyle} 
-                                value={editData.title} 
-                                onChange={e => setEditData({...editData, title: e.target.value})} 
-                            />
-                            
-                            <label style={labelStyle}>Статус прогресса</label>
-                            <select 
-                                style={inputStyle} 
-                                value={editData.status} 
-                                onChange={e => setEditData({...editData, status: e.target.value})}
-                            >
-                                <option value="not-started">🔴 Не начато</option>
-                                <option value="in-progress">🟡 В процессе</option>
-                                <option value="completed">🟢 Изучено</option>
-                            </select>
+                        
+                        <div style={{ marginTop: '30px' }}>
+                            <h4 style={labelStyle}>Статус</h4>
+                            <p style={{ fontSize: '18px' }}>{formatStatus(tech.status)}</p>
                         </div>
-                    )}
-                </div>
 
-                {/* Основной контент */}
-                <div style={{ padding: '30px' }}>
-                    {!isEditing ? (
-                        <>
-                            <h3 style={sectionTitle}>Описание</h3>
-                            <p style={{ lineHeight: '1.7', color: '#334155', fontSize: '18px' }}>
-                                {tech.description || "Описание отсутствует."}
-                            </p>
-                            
-                            <h3 style={{ ...sectionTitle, marginTop: '30px' }}>Заметки и ссылки</h3>
-                            <div style={{ backgroundColor: '#f8fafc', padding: '20px', borderRadius: '12px', border: '1px solid #e2e8f0', whiteSpace: 'pre-wrap' }}>
-                                {tech.notes || "Здесь пока нет ваших записей."}
-                            </div>
-                        </>
-                    ) : (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                            <div>
-                                <label style={labelStyle}>Краткое описание</label>
-                                <textarea 
-                                    style={{ ...inputStyle, minHeight: '100px' }} 
-                                    value={editData.description} 
-                                    onChange={e => setEditData({...editData, description: e.target.value})} 
-                                />
-                            </div>
-                            <div>
-                                <label style={labelStyle}>Заметки (планы, ссылки, важные мысли)</label>
-                                <textarea 
-                                    style={{ ...inputStyle, minHeight: '200px', fontFamily: 'monospace' }} 
-                                    value={editData.notes} 
-                                    onChange={e => setEditData({...editData, notes: e.target.value})} 
-                                />
-                            </div>
-                            
-                            <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-                                <button onClick={handleSave} className="btn btn-primary" style={{ padding: '12px 30px' }}>
-                                    💾 Сохранить изменения
-                                </button>
-                                <button onClick={() => setIsEditing(false)} className="btn btn-outline" style={{ padding: '12px 30px' }}>
-                                    Отмена
-                                </button>
+                        <div style={{ marginTop: '20px' }}>
+                            <h4 style={labelStyle}>Описание</h4>
+                            <p style={{ lineHeight: '1.6' }}>{tech.description || 'Описание отсутствует'}</p>
+                        </div>
+
+                        <div style={{ marginTop: '20px' }}>
+                            <h4 style={labelStyle}>Заметки</h4>
+                            <div style={{ 
+                                padding: '15px', 
+                                background: 'var(--color-bg)', 
+                                borderRadius: '10px', 
+                                border: '1px solid var(--border-color)',
+                                whiteSpace: 'pre-wrap'
+                            }}>
+                                {tech.notes || 'Здесь пока пусто...'}
                             </div>
                         </div>
-                    )}
-                </div>
+                    </div>
+                ) : (
+                    /* РЕЖИМ РЕДАКТИРОВАНИЯ */
+                    <div>
+                        <h2>Редактирование</h2>
+                        
+                        <label style={labelStyle}>Название</label>
+                        <input 
+                            style={inputStyle} 
+                            value={editData.title} 
+                            onChange={e => setEditData({...editData, title: e.target.value})} 
+                        />
+
+                        <label style={labelStyle}>Категория</label>
+                        <input 
+                            style={inputStyle} 
+                            value={editData.category} 
+                            onChange={e => setEditData({...editData, category: e.target.value})} 
+                        />
+
+                        <label style={labelStyle}>Статус</label>
+                        <select 
+                            style={inputStyle} 
+                            value={editData.status} 
+                            onChange={e => setEditData({...editData, status: e.target.value})}
+                        >
+                            <option value="not-started">🔴 Не начато</option>
+                            <option value="in-progress">🟡 В процессе</option>
+                            <option value="completed">🟢 Изучено</option>
+                        </select>
+
+                        <label style={labelStyle}>Заметки</label>
+                        <textarea 
+                            style={{ ...inputStyle, minHeight: '150px', resize: 'vertical' }} 
+                            value={editData.notes} 
+                            onChange={e => setEditData({...editData, notes: e.target.value})} 
+                        />
+
+                        <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+                            <button onClick={handleSave} className="btn btn-primary" style={{ flex: 1 }}>💾 Сохранить</button>
+                            <button onClick={() => setIsEditing(false)} className="btn btn-outline" style={{ flex: 1 }}>Отмена</button>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
 }
-
-// Стили
-const labelStyle = { display: 'block', fontSize: '13px', fontWeight: '700', color: '#64748b', marginBottom: '5px', textTransform: 'uppercase' };
-const inputStyle = { width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #cbd5e1', fontSize: '16px', boxSizing: 'border-box', outline: 'none' };
-const sectionTitle = { fontSize: '14px', fontWeight: '800', textTransform: 'uppercase', color: '#94a3b8', letterSpacing: '1px', marginBottom: '15px' };
 
 const formatStatus = (s) => {
     if (s === 'completed') return '🟢 Изучено';
     if (s === 'in-progress') return '🟡 В процессе';
     return '🔴 Не начато';
 };
-
-const statusBadgeStyle = (s) => ({
-    padding: '5px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold',
-    backgroundColor: s === 'completed' ? '#dcfce7' : s === 'in-progress' ? '#fef9c3' : '#f1f5f9',
-    color: s === 'completed' ? '#15803d' : s === 'in-progress' ? '#a16207' : '#475569'
-});
 
 export default TechnologyDetail;

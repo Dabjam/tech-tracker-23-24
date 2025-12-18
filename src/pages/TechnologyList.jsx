@@ -23,19 +23,28 @@ function TechnologyList() {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '30px', padding: '20px' }}>
             <section>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
-                    <h1>Мои технологии</h1>
+                    <h1 style={{ color: 'var(--color-text)' }}>Мои технологии</h1>
                     <Link to="/add" className="btn btn-primary" style={{ padding: '10px 20px', textDecoration: 'none', borderRadius: '8px', fontWeight: 'bold' }}>
                         ➕ Добавить технологию
                     </Link>
                 </div>
 
-                <div style={{ marginBottom: '30px' }}>
+                <div style={{ marginBottom: '20px' }}>
                     <input 
                         type="text"
-                        placeholder="🔍 Поиск по названию или категории..."
+                        placeholder="Поиск по названию..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        style={{ width: '100%', padding: '15px', borderRadius: '12px', border: '2px solid #e2e8f0', fontSize: '16px', outline: 'none' }}
+                        style={{ 
+                            width: '100%', 
+                            padding: '15px', 
+                            borderRadius: '12px', 
+                            border: '2px solid var(--border-color)', 
+                            fontSize: '16px', 
+                            outline: 'none',
+                            background: 'var(--color-card-bg)', // ИСПРАВЛЕНО
+                            color: 'var(--color-text)'      // ИСПРАВЛЕНО
+                        }}
                     />
                 </div>
 
@@ -45,12 +54,19 @@ function TechnologyList() {
                             <TechnologyCard 
                                 key={tech.id} 
                                 tech={tech} 
-                                onUpdate={api.setTechnologies} 
                                 onDelete={api.deleteTechnology} 
                             />
                         ))
                     ) : (
-                        <div style={{ textAlign: 'center', padding: '50px', background: '#fff', borderRadius: '15px' }}>Ничего не найдено</div>
+                        <div style={{ 
+                            textAlign: 'center', 
+                            padding: '50px', 
+                            background: 'var(--color-card-bg)', // ИСПРАВЛЕНО
+                            color: 'var(--color-text)',       // ИСПРАВЛЕНО
+                            borderRadius: '15px' 
+                        }}>
+                            Ничего не найдено
+                        </div>
                     )}
                 </div>
             </section>
