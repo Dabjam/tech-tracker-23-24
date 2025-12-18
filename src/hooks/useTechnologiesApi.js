@@ -1,118 +1,65 @@
-// src/hooks/useTechnologiesApi.js
+import { useState, useEffect } from 'react';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
-
-const LOCAL_STORAGE_KEY = 'techTrackerData'; 
-
-const mockTechnologies = [
-    { id: 1, title: 'React', description: 'Библиотека для создания пользовательских интерфейсов', category: 'frontend', difficulty: 'beginner', resources: ['https://react.dev'], status: 'completed', notes: 'Освоены хуки.' },
-    { id: 2, title: 'Node.js', description: 'Среда выполнения JavaScript на сервере', category: 'backend', difficulty: 'intermediate', resources: ['https://nodejs.org'], status: 'in-progress', notes: 'Нужно разобраться с Express.' },
-    { id: 3, title: 'TypeScript', description: 'Типизированное надмножество JavaScript', category: 'language', difficulty: 'intermediate', resources: ['https://www.typescriptlang.org'], status: 'not-started', notes: '' }
-];
-
-function useTechnologiesApi() {
-    const [technologies, setTechnologies] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    const generateId = useCallback(() => {
-        return Date.now() + Math.floor(Math.random() * 1000);
-    }, []);
-
-    const fetchTechnologies = useCallback(async () => {
-        try {
-            setLoading(true);
-            const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
-            if (savedData) {
-                setTechnologies(JSON.parse(savedData));
-            } else {
-                setTechnologies(mockTechnologies);
-            }
-        } catch (err) {
-            console.error("Ошибка при загрузке данных:", err);
-            setError("Не удалось загрузить данные.");
-        } finally {
-            setLoading(false);
-        }
-    }, []);
+const useTechnologiesApi = () => {
+    const [technologies, setTechnologies] = useState(() => {
+        const saved = localStorage.getItem('technologies');
+        return saved ? JSON.parse(saved) : [];
+    });
 
     useEffect(() => {
-        fetchTechnologies();
-    }, [fetchTechnologies]);
+        localStorage.setItem('technologies', JSON.stringify(technologies));
+    }, [technologies]);
 
-    useEffect(() => {
-        if (!loading) {
-            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(technologies));
-        }
-    }, [technologies, loading]);
-
-    const addTechnology = useCallback((tech) => {
-        const newTech = { 
-            ...tech, 
-            id: generateId(),
-            notes: tech.notes || '',
-            status: tech.status || 'not-started'
+    const addTechnology = (tech) => {
+        const newTech = {
+            ...tech,
+            id: Date.now().toString(),
+            status: tech.status || 'not-started',
+            notes: tech.notes || ''
         };
         setTechnologies(prev => [...prev, newTech]);
-    }, [generateId]);
+    };
 
-    const updateTechnology = useCallback((id, updatedFields) => {
-        setTechnologies(prev => prev.map(tech => 
-            tech.id === id ? { ...tech, ...updatedFields } : tech
-        ));
-    }, []);
+    const deleteTechnology = (id) => {
+        setTechnologies(prev => prev.filter(t => t.id !== id));
+    };
 
-    const deleteTechnology = useCallback((id) => {
-        setTechnologies(prev => prev.filter(tech => tech.id !== id));
-    }, []);
-
-    const deleteAllTechnologies = useCallback(() => {
+    const deleteAllTechnologies = () => {
         setTechnologies([]);
-    }, []);
+        localStorage.removeItem('technologies');
+    };
 
-    const batchAddTechnologies = useCallback((newTechs) => {
-        const techsWithIds = newTechs.map(t => ({
+    const updateAllStatuses = (newStatus) => {
+        setTechnologies(prev => prev.map(t => ({ ...t, status: newStatus })));
+    };
+
+    const batchAddTechnologies = (newData) => {
+        const processed = newData.map(t => ({
             ...t,
-            id: generateId() + Math.floor(Math.random() * 10000),
-            status: t.status || 'not-started',
-            notes: t.notes || '',
-            resources: t.resources || []
+            id: t.id || Math.random().toString(36).substr(2, 9),
+            status: t.status || 'not-started'
         }));
-        setTechnologies(prev => [...prev, ...techsWithIds]);
-    }, [generateId]);
+        setTechnologies(prev => [...prev, ...processed]);
+    };
 
-    const markAllCompleted = useCallback(() => {
-        setTechnologies(prev => prev.map(t => ({ ...t, status: 'completed' })));
-    }, []);
-
-    const resetAllStatuses = useCallback(() => {
-        setTechnologies(prev => prev.map(t => ({ ...t, status: 'not-started' })));
-    }, []);
-
-    const exportTechnologiesAsJson = useCallback(() => {
+    const exportTechnologiesAsJson = () => {
         const dataStr = JSON.stringify(technologies, null, 2);
-        const blob = new Blob([dataStr], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `tech_tracker_export_${new Date().toISOString().slice(0, 10)}.json`;
-        a.click();
-        URL.revokeObjectURL(url);
-    }, [technologies]);
-
-    const stats = useMemo(() => {
-        const completed = technologies.filter(t => t.status === 'completed').length;
-        const total = technologies.length;
-        const progressPercentage = total > 0 ? (completed / total) * 100 : 0;
-        return { completed, total, progressPercentage };
-    }, [technologies]);
+        const link = document.createElement('a');
+        link.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+        link.download = 'tech_backup.json';
+        link.click();
+    };
 
     return {
-        technologies, loading, error, stats,
-        addTechnology, updateTechnology, deleteTechnology, 
-        deleteAllTechnologies, batchAddTechnologies,
-        markAllCompleted, resetAllStatuses, exportTechnologiesAsJson
+        technologies,
+        setTechnologies,
+        addTechnology,
+        deleteTechnology,
+        deleteAllTechnologies,
+        batchAddTechnologies,
+        updateAllStatuses,
+        exportTechnologiesAsJson
     };
-}
+};
 
 export default useTechnologiesApi;

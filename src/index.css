@@ -722,3 +722,114 @@ body {
 .dark-theme .custom-scrollbar::-webkit-scrollbar-thumb {
     background: #475569;
 }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-content {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Базовая адаптивность для контейнеров */
+.container, .nav-container, .page-layout, .admin-page {
+    padding-left: 15px;
+    padding-right: 15px;
+    box-sizing: border-box;
+}
+
+/* Настройка сетки: на экранах меньше 992px колонки встают в ряд */
+@media (max-width: 992px) {
+    .page-layout, .admin-page {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 20px !important;
+    }
+
+    /* Боковая панель (Sidebar) на мобилках идет вниз и занимает 100% */
+    aside, .sidebar {
+        width: 100% !important;
+        order: 2; /* Основной контент будет первым, сайдбар вторым */
+    }
+
+    .main-content {
+        order: 1;
+    }
+}
+
+/* Адаптация для Navbar на мобильных устройствах */
+@media (max-width: 600px) {
+    .nav-container {
+        flex-direction: column;
+        height: auto;
+        padding: 15px 0;
+        gap: 15px;
+    }
+
+    .nav-links {
+        gap: 10px !important;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .nav-logo {
+        font-size: 18px;
+    }
+
+    /* Кнопки в карточках и админке делаем крупнее для нажатия пальцем */
+    .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 24px !important;
+    }
+
+    /* Таблицы в админке превращаем в скроллируемые блоки */
+    .admin-card {
+        overflow-x: auto;
+    }
+}
+
+/* --- MEDIA QUERIES --- */
+
+/* Планшеты и телефоны (вертикальный вид) */
+@media (max-width: 992px) {
+  .responsive-layout {
+    grid-template-columns: 1fr; /* Одна колонка */
+    padding: 15px;
+  }
+
+  .sidebar-area {
+    order: 2; /* Сайдбар уходит вниз */
+  }
+
+  .main-area {
+    order: 1;
+  }
+
+  .nav-content {
+    flex-direction: column;
+    height: auto;
+    padding: 15px 0;
+    gap: 15px;
+  }
+}
+
+/* Только телефоны */
+@media (max-width: 600px) {
+  .nav-links {
+    gap: 10px;
+    font-size: 14px;
+  }
+
+  h1 { font-size: 24px !important; }
+
+  .btn {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+}

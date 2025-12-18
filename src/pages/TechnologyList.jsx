@@ -1,91 +1,68 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import useTechnologiesApi from '../hooks/useTechnologiesApi';
 import TechnologyCard from '../components/TechnologyCard';
-import RoadmapImporter from '../components/RoadmapImporter';
-import SearchWithDebounce from '../components/SearchWithDebounce'; 
-import FilterControls from '../components/FilterControls';
 import QuickActions from '../components/QuickActions';
+import RoadmapImporter from '../components/RoadmapImporter';
 
 function TechnologyList() {
-    const { 
-        technologies, 
-        loading, 
-        error, 
-        addTechnology, 
-        deleteTechnology, // Теперь используем!
-        batchAddTechnologies,
-        markAllCompleted,
-        resetAllStatuses
-    } = useTechnologiesApi();
-    
-    const [searchTerm, setSearchTerm] = useState('');
-    const [activeFilter, setActiveFilter] = useState('all');
+    const api = useTechnologiesApi();
+    const [searchQuery, setSearchQuery] = useState('');
 
-    // Исправлено: теперь функция не пустая
-    const handleDelete = (id) => {
-        deleteTechnology(id);
-    };
+    const filteredTechnologies = api.technologies.filter(tech => 
+        tech.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        tech.category.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
-    const filteredTechnologies = useMemo(() => {
-        let currentList = technologies;
-        if (activeFilter !== 'all') {
-            currentList = currentList.filter(tech => tech.status === activeFilter);
-        }
-        if (searchTerm) {
-            const lowerCaseSearchTerm = searchTerm.toLowerCase();
-            currentList = currentList.filter(tech => 
-                (tech.title || '').toLowerCase().includes(lowerCaseSearchTerm) ||
-                (tech.description || '').toLowerCase().includes(lowerCaseSearchTerm)
-            );
-        }
-        return currentList;
-    }, [technologies, activeFilter, searchTerm]);
-
-    if (loading) return <div className="loading-state">Загрузка технологий...</div>;
-    if (error) return <div className="error-state">Ошибка: {error}</div>;
+    const sortedTechnologies = [...filteredTechnologies].sort((a, b) => {
+        const priority = { 'in-progress': 1, 'not-started': 2, 'completed': 3 };
+        return priority[a.status] - priority[b.status];
+    });
 
     return (
-        <div className="technology-list-page">
-            <div className="list-header-actions">
-                <SearchWithDebounce 
-                    onSearchChange={setSearchTerm} 
-                    resultsCount={filteredTechnologies.length}
-                    totalCount={technologies.length}
-                />
-                <FilterControls 
-                    activeFilter={activeFilter}
-                    onFilterChange={setActiveFilter}
-                />
-            </div>
-            
-            <div className="quick-actions-and-import-container">
-                <QuickActions 
-                    onMarkAllCompleted={markAllCompleted}
-                    onResetAllStatuses={resetAllStatuses}
-                />
-                <RoadmapImporter 
-                    addTechnology={addTechnology}
-                    batchAddTechnologies={batchAddTechnologies}
-                />
-            </div>
-
-            <div className="technology-list">
-                {filteredTechnologies.map(tech => (
-                    <TechnologyCard 
-                        key={tech.id} 
-                        tech={tech}
-                        onDelete={handleDelete} // Передаем исправленную функцию
-                    />
-                ))}
-            </div>
-
-            {filteredTechnologies.length === 0 && (
-                <div className="empty-state">
-                    <p>Технологий пока нет.</p>
-                    <Link to="/add" className="btn btn-info">Добавить технологию</Link>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '30px', padding: '20px' }}>
+            <section>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
+                    <h1>Мои технологии</h1>
+                    <Link to="/add" className="btn btn-primary" style={{ padding: '10px 20px', textDecoration: 'none', borderRadius: '8px', fontWeight: 'bold' }}>
+                        ➕ Добавить технологию
+                    </Link>
                 </div>
-            )}
+
+                <div style={{ marginBottom: '30px' }}>
+                    <input 
+                        type="text"
+                        placeholder="🔍 Поиск по названию или категории..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        style={{ width: '100%', padding: '15px', borderRadius: '12px', border: '2px solid #e2e8f0', fontSize: '16px', outline: 'none' }}
+                    />
+                </div>
+
+                <div style={{ display: 'grid', gap: '20px' }}>
+                    {sortedTechnologies.length > 0 ? (
+                        sortedTechnologies.map(tech => (
+                            <TechnologyCard 
+                                key={tech.id} 
+                                tech={tech} 
+                                onUpdate={api.setTechnologies} 
+                                onDelete={api.deleteTechnology} 
+                            />
+                        ))
+                    ) : (
+                        <div style={{ textAlign: 'center', padding: '50px', background: '#fff', borderRadius: '15px' }}>Ничего не найдено</div>
+                    )}
+                </div>
+            </section>
+
+            <aside>
+                <QuickActions 
+                    technologies={api.technologies}
+                    updateAllStatuses={api.updateAllStatuses}
+                    exportTechnologiesAsJson={api.exportTechnologiesAsJson}
+                />
+                <RoadmapImporter batchAddTechnologies={api.batchAddTechnologies} />
+            </aside>
         </div>
     );
 }
