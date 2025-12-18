@@ -1,16 +1,12 @@
-// src/contexts/UserContext.jsx
-
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
-// Создаем контекст
 const UserContext = createContext();
 
 // Провайдер контекста
 export function UserProvider({ children }) {
-    // Получаем роль из localStorage при инициализации
     const [userRole, setUserRole] = useState(() => {
         const savedRole = localStorage.getItem('userRole');
-        return savedRole || 'user'; // По умолчанию 'user'
+        return savedRole || 'user'; 
     });
 
     // Сохраняем роль в localStorage при изменении

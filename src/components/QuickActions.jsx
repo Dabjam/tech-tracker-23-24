@@ -16,10 +16,10 @@ function QuickActions({ technologies, updateAllStatuses, exportTechnologiesAsJso
     return (
         <div className="quick-actions" style={{ 
             padding: '20px', 
-            background: 'var(--color-card-bg)', // ИСПРАВЛЕНО
+            background: 'var(--color-card-bg)', 
             borderRadius: '12px', 
             border: '1px solid var(--border-color)',
-            color: 'var(--color-text)'        // ИСПРАВЛЕНО
+            color: 'var(--color-text)'        
         }}>
             <h3 style={{ textAlign: 'center', marginBottom: '20px' }}>⚡ Быстрые действия</h3>
             

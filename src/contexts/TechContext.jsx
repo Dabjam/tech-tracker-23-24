@@ -1,4 +1,3 @@
-// src/contexts/TechContext.jsx
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
 const TechContext = createContext();
@@ -27,8 +26,6 @@ export const TechProvider = ({ children }) => {
     const addTechnology = useCallback((tech) => {
         setTechnologies(prev => [...prev, { ...tech, id: Date.now() }]);
     }, []);
-
-    // ... добавь сюда остальные методы (update, batchAdd и т.д.) из своего хука
 
     return (
         <TechContext.Provider value={{ technologies, deleteTechnology, addTechnology }}>

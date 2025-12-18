@@ -13,5 +13,4 @@ export const INITIAL_DATA = [
         category: 'Language',
         description: 'Изучение новых возможностей JavaScript.'
     }
-    // ... твои остальные данные
 ];

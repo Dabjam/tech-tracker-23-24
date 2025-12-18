@@ -72,7 +72,6 @@ function TechnologyDetail() {
                 </div>
 
                 {!isEditing ? (
-                    /* РЕЖИМ ПРОСМОТРА */
                     <div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                             <div>
@@ -106,7 +105,6 @@ function TechnologyDetail() {
                         </div>
                     </div>
                 ) : (
-                    /* РЕЖИМ РЕДАКТИРОВАНИЯ */
                     <div>
                         <h2>Редактирование</h2>
                         

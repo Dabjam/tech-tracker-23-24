@@ -71,7 +71,7 @@ function AdminPanel({ userRole }) {
                                                 background: 'none', 
                                                 cursor: 'pointer', 
                                                 fontSize: '18px',
-                                                filter: 'grayscale(1)' // Слегка приглушаем иконку
+                                                filter: 'grayscale(1)' 
                                             }}
                                             title="Удалить"
                                         >
@@ -92,7 +92,6 @@ function AdminPanel({ userRole }) {
             </div>
 
             <aside>
-                {/* Импортёр тоже должен поддерживать переменные внутри себя */}
                 <div style={cardStyle}>
                     <h3 style={{ marginBottom: '15px' }}>Импорт данных</h3>
                     <RoadmapImporter batchAddTechnologies={api.batchAddTechnologies} />

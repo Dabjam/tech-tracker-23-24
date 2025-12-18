@@ -1,13 +1,10 @@
-// src/components/SearchWithDebounce.jsx
-
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import useDebounce from '../hooks/useDebounce';
 
 function SearchWithDebounce({ onSearchChange, resultsCount, totalCount }) {
     const [inputValue, setInputValue] = useState('');
     const [isTyping, setIsTyping] = useState(false);
-    
-    // Используем debounce с задержкой 500мс
+
     const debouncedSearchTerm = useDebounce(inputValue, 500);
     
     const handleInputChange = useCallback((e) => {
@@ -15,8 +12,7 @@ function SearchWithDebounce({ onSearchChange, resultsCount, totalCount }) {
         setInputValue(value);
         setIsTyping(true);
     }, []);
-    
-    // Отслеживаем завершение ввода
+
     useEffect(() => {
         if (inputValue) {
             setIsTyping(inputValue !== debouncedSearchTerm);

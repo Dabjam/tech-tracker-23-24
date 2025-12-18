@@ -42,8 +42,8 @@ function TechnologyList() {
                             border: '2px solid var(--border-color)', 
                             fontSize: '16px', 
                             outline: 'none',
-                            background: 'var(--color-card-bg)', // ИСПРАВЛЕНО
-                            color: 'var(--color-text)'      // ИСПРАВЛЕНО
+                            background: 'var(--color-card-bg)', 
+                            color: 'var(--color-text)'      
                         }}
                     />
                 </div>
@@ -61,8 +61,8 @@ function TechnologyList() {
                         <div style={{ 
                             textAlign: 'center', 
                             padding: '50px', 
-                            background: 'var(--color-card-bg)', // ИСПРАВЛЕНО
-                            color: 'var(--color-text)',       // ИСПРАВЛЕНО
+                            background: 'var(--color-card-bg)', 
+                            color: 'var(--color-text)',       
                             borderRadius: '15px' 
                         }}>
                             Ничего не найдено

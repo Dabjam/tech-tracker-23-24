@@ -1,5 +1,3 @@
-// src/components/FilterControls.jsx
-
 const FILTERS = [
     { label: 'Все', value: 'all' },
     { label: 'Не начато', value: 'not-started' },

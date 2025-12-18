@@ -11,7 +11,7 @@ function TechnologyCard({ tech, onDelete }) {
 
   return (
     <div style={{ 
-        backgroundColor: 'var(--color-card-bg)', // ИСПРАВЛЕНО
+        backgroundColor: 'var(--color-card-bg)', 
         padding: '20px', 
         borderRadius: '16px', 
         border: '1px solid var(--border-color)', 

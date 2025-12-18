@@ -1,5 +1,3 @@
-// src/components/RoadmapImporter.jsx
-
 import React, { useState, useRef } from 'react';
 
 function RoadmapImporter({ batchAddTechnologies }) {
@@ -77,7 +75,6 @@ function RoadmapImporter({ batchAddTechnologies }) {
                 gap: '15px' 
             }}>
                 
-                {/* Первая кнопка (Синяя) */}
                 <button 
                     onClick={handleExampleImport} 
                     className="btn btn-primary" 
@@ -93,7 +90,6 @@ function RoadmapImporter({ batchAddTechnologies }) {
                     {importing ? '⏳ Загрузка...' : '⚡ Добавить готовые примеры'}
                 </button>
                 
-                {/* Вторая кнопка (Теперь с задним фоном, чтобы не сливалась) */}
                 <div style={{ position: 'relative', width: '100%' }}>
                     {fileName && (
                         <div style={{
@@ -115,8 +111,8 @@ function RoadmapImporter({ batchAddTechnologies }) {
                             padding: '15px', 
                             fontSize: '15px',
                             fontWeight: 'bold',
-                            backgroundColor: '#4a5568', // ТЕМНЫЙ ЗАДНИЙ ФОН
-                            color: '#ffffff',           // БЕЛЫЙ ТЕКСТ
+                            backgroundColor: '#4a5568', 
+                            color: '#ffffff',           
                             border: 'none',
                             borderRadius: '8px',
                             cursor: 'pointer'

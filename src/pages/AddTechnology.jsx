@@ -17,7 +17,7 @@ function AddTechnology() {
     const handleSubmit = (e) => {
         e.preventDefault();
         addTechnology(formData);
-        navigate('/technologies'); // Переход на список после добавления
+        navigate('/technologies'); 
     };
 
     // Стили, использующие CSS-переменные темы

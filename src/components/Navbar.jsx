@@ -4,7 +4,6 @@ import { Link, useLocation } from 'react-router-dom';
 function Navbar({ userRole, onLogout }) {
   const location = useLocation();
   
-  // Функция для проверки активной ссылки
   const isActive = (path) => location.pathname === path;
 
   return (
@@ -27,7 +26,6 @@ function Navbar({ userRole, onLogout }) {
             Статистика
           </Link>
 
-          {/* ССЫЛКА НА НАСТРОЙКИ */}
           <Link 
             to="/settings" 
             style={isActive('/settings') ? activeLink : linkStyle}
@@ -55,7 +53,6 @@ function Navbar({ userRole, onLogout }) {
   );
 }
 
-// СТИЛИ (теперь используют переменные из index.css)
 const navStyle = { 
   height: '70px', 
   background: 'var(--color-card-bg)', 

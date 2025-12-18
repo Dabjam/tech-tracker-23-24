@@ -1,17 +1,13 @@
-// src/components/Navigation.jsx
-
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 function Navigation() {
     const location = useLocation();
-    
-    // Локальное состояние для роли
+
     const [userRole, setUserRole] = useState(() => {
         return localStorage.getItem('userRole') || 'user';
     });
 
-    // Получаем роль из localStorage при изменении
     useEffect(() => {
         const handleStorageChange = () => {
             const role = localStorage.getItem('userRole') || 'user';
@@ -22,7 +18,6 @@ function Navigation() {
         return () => window.removeEventListener('storage', handleStorageChange);
     }, []);
 
-    // Также проверяем при каждом рендере (на случай изменений в этой же вкладке)
     useEffect(() => {
         const role = localStorage.getItem('userRole') || 'user';
         if (role !== userRole) {
@@ -51,7 +46,6 @@ function Navigation() {
                 ⚙️ Настройки
             </Link>
             
-            {/* Показываем ссылку на админку только если пользователь - админ */}
             {userRole === 'admin' && (
                 <Link to="/admin" className={getLinkClass('/admin')}>
                     🔒 Админ-панель

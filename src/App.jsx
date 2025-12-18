@@ -7,7 +7,7 @@ import TechnologyDetail from './pages/TechnologyDetail';
 import AdminPanel from './pages/AdminPanel';
 import Statistics from './pages/Statistics';
 import AddTechnology from './pages/AddTechnology';
-import Settings from './pages/Settings'; // Импортируем страницу настроек
+import Settings from './pages/Settings'; 
 
 function App() {
   const [userRole, setUserRole] = useState(() => {
@@ -36,7 +36,6 @@ function App() {
 
   return (
     <div className="app-container">
-      {/* МЕНЮ ПОЯВЛЯЕТСЯ ТОЛЬКО ПОСЛЕ ВХОДА */}
       {userRole && <Navbar userRole={userRole} onLogout={handleLogout} />}
       
       <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
@@ -82,9 +81,6 @@ function App() {
   );
 }
 
-/**
- * Внутренний компонент экрана входа (Модалка)
- */
 function LoginScreen({ onLogin }) {
   const [role, setRole] = useState('user');
 

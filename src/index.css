@@ -1,4 +1,3 @@
-/* --- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ И ТЕМЫ --- */
 :root {
     --color-primary: #5a7dff;
     --color-primary-dark: #3f51b5;
@@ -222,7 +221,7 @@ body {
     --color-card-bg: #ffffff;
     --color-text: #1a1a1a;
     --border-color: #e0e0e0;
-    /* ... остальные переменные */
+ 
 }
 
 body.dark-theme {
@@ -264,7 +263,7 @@ body {
     transition: background 0.3s, color 0.3s;
 }
 
-/* Глобальный стиль для кнопок, чтобы они не были белыми в темной теме */
+
 .btn-outline {
     background: transparent;
     border: 1px solid var(--border-color);

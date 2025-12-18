@@ -1,5 +1,3 @@
-// src/utils/hooks.js
-
 import { useState, useEffect } from 'react';
 
 /**
@@ -17,9 +15,6 @@ export function useDebounce(value, delay) {
             setDebouncedValue(value);
         }, delay);
 
-        // Очистка предыдущего таймера при изменении value
-        // Это гарантирует, что предыдущий ввод отменяется, 
-        // и обновление происходит только после того, как ввод прекратился (Debounce).
         return () => {
             clearTimeout(handler);
         };
