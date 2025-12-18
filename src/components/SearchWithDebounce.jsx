@@ -1,7 +1,9 @@
-import React, { useState, useCallback, useMemo } from 'react';
+// src/components/SearchWithDebounce.jsx
+
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import useDebounce from '../hooks/useDebounce';
 
-const SearchWithDebounce = ({ onSearchChange, resultsCount, totalCount }) => {
+function SearchWithDebounce({ onSearchChange, resultsCount, totalCount }) {
     const [inputValue, setInputValue] = useState('');
     const [isTyping, setIsTyping] = useState(false);
     
@@ -15,14 +17,14 @@ const SearchWithDebounce = ({ onSearchChange, resultsCount, totalCount }) => {
     }, []);
     
     // Отслеживаем завершение ввода
-    React.useEffect(() => {
+    useEffect(() => {
         if (inputValue) {
             setIsTyping(inputValue !== debouncedSearchTerm);
         }
     }, [inputValue, debouncedSearchTerm]);
     
     // Вызываем поиск после debounce
-    React.useEffect(() => {
+    useEffect(() => {
         onSearchChange(debouncedSearchTerm);
         if (debouncedSearchTerm === inputValue) {
             setIsTyping(false);
@@ -118,6 +120,6 @@ const SearchWithDebounce = ({ onSearchChange, resultsCount, totalCount }) => {
             </div>
         </div>
     );
-};
+}
 
 export default React.memo(SearchWithDebounce);

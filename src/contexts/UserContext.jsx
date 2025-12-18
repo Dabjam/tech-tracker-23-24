@@ -1,3 +1,5 @@
+// src/contexts/UserContext.jsx
+
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
 // Создаем контекст

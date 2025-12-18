@@ -7,21 +7,18 @@ const StatusHistogram = ({ stats }) => {
     
     if (total === 0) return <p>Данные отсутствуют</p>;
 
-    // Данные для гистограммы
     const data = [
         { label: 'Выполнено', value: stats.completed, color: 'var(--color-success)' },
         { label: 'В процессе', value: stats['in-progress'], color: 'var(--color-warning)' },
         { label: 'Не начато', value: stats['not-started'], color: 'var(--color-danger)' }
     ];
 
-    // Находим максимальное значение для масштабирования
     const maxValue = Math.max(...data.map(item => item.value));
-    const maxHeight = 180; // Максимальная высота столбцов в пикселях
+    const maxHeight = 180;
 
     return (
         <div className="chart-container">
             <svg width="100%" height="250" style={{ overflow: 'visible' }}>
-                {/* Линии сетки */}
                 {[0, 1, 2, 3, 4, 5].map(i => (
                     <line
                         key={`grid-${i}`}
@@ -35,7 +32,6 @@ const StatusHistogram = ({ stats }) => {
                     />
                 ))}
 
-                {/* Столбцы гистограммы */}
                 {data.map((item, index) => {
                     const barWidth = 60;
                     const gap = 40;
@@ -45,7 +41,6 @@ const StatusHistogram = ({ stats }) => {
 
                     return (
                         <g key={item.label}>
-                            {/* Столбец */}
                             <rect
                                 x={x}
                                 y={y}
@@ -58,7 +53,6 @@ const StatusHistogram = ({ stats }) => {
                                 style={{ transition: 'height 0.8s ease' }}
                             />
                             
-                            {/* Значение над столбцом */}
                             <text
                                 x={x + barWidth / 2}
                                 y={y - 10}
@@ -70,7 +64,6 @@ const StatusHistogram = ({ stats }) => {
                                 {item.value}
                             </text>
                             
-                            {/* Подпись под столбцом */}
                             <text
                                 x={x + barWidth / 2}
                                 y={225}
@@ -84,7 +77,6 @@ const StatusHistogram = ({ stats }) => {
                     );
                 })}
 
-                {/* Ось Y */}
                 <line
                     x1="40"
                     y1="50"
@@ -94,7 +86,6 @@ const StatusHistogram = ({ stats }) => {
                     strokeWidth="2"
                 />
 
-                {/* Ось X */}
                 <line
                     x1="40"
                     y1="200"
@@ -114,17 +105,14 @@ const CategoryHistogram = ({ categoryStats }) => {
     
     if (categories.length === 0) return <p>Категории не определены</p>;
 
-    // Сортируем по количеству
     const sortedData = categories
         .map(([name, count]) => ({ name, count }))
         .sort((a, b) => b.count - a.count)
-        .slice(0, 8); // Ограничиваем до 8 категорий для лучшего отображения
+        .slice(0, 8);
 
-    // Находим максимальное значение для масштабирования
     const maxValue = Math.max(...sortedData.map(item => item.count));
     const maxHeight = 180;
 
-    // Генерация цветов для категорий
     const colors = [
         '#5a7dff', '#ff6b6b', '#4ecdc4', '#ffd166', '#06d6a0',
         '#118ab2', '#ef476f', '#073b4c'
@@ -133,7 +121,6 @@ const CategoryHistogram = ({ categoryStats }) => {
     return (
         <div className="chart-container">
             <svg width="100%" height="300" style={{ overflow: 'visible' }}>
-                {/* Линии сетки */}
                 {[0, 1, 2, 3, 4, 5].map(i => (
                     <line
                         key={`cat-grid-${i}`}
@@ -147,7 +134,6 @@ const CategoryHistogram = ({ categoryStats }) => {
                     />
                 ))}
 
-                {/* Столбцы по категориям */}
                 {sortedData.map((item, index) => {
                     const barWidth = 50;
                     const gap = 20;
@@ -158,7 +144,6 @@ const CategoryHistogram = ({ categoryStats }) => {
 
                     return (
                         <g key={item.name}>
-                            {/* Столбец */}
                             <rect
                                 x={x}
                                 y={y}
@@ -171,7 +156,6 @@ const CategoryHistogram = ({ categoryStats }) => {
                                 style={{ transition: 'height 0.8s ease' }}
                             />
                             
-                            {/* Значение над столбцом */}
                             <text
                                 x={x + barWidth / 2}
                                 y={y - 10}
@@ -183,7 +167,6 @@ const CategoryHistogram = ({ categoryStats }) => {
                                 {item.count}
                             </text>
                             
-                            {/* Подпись под столбцом (повернутая) */}
                             <text
                                 x={x + barWidth / 2}
                                 y={225}
@@ -198,7 +181,6 @@ const CategoryHistogram = ({ categoryStats }) => {
                     );
                 })}
 
-                {/* Ось Y */}
                 <line
                     x1="50"
                     y1="50"
@@ -208,7 +190,6 @@ const CategoryHistogram = ({ categoryStats }) => {
                     strokeWidth="2"
                 />
 
-                {/* Ось X */}
                 <line
                     x1="50"
                     y1="200"
@@ -225,7 +206,6 @@ const CategoryHistogram = ({ categoryStats }) => {
 function Statistics() {
     const { technologies, loading } = useTechnologiesApi();
 
-    // 1. Считаем статистику по статусам
     const statusStats = useMemo(() => {
         return technologies.reduce((acc, tech) => {
             acc[tech.status] = (acc[tech.status] || 0) + 1;
@@ -233,7 +213,6 @@ function Statistics() {
         }, { 'completed': 0, 'in-progress': 0, 'not-started': 0 });
     }, [technologies]);
 
-    // 2. Считаем статистику по категориям
     const categoryStats = useMemo(() => {
         return technologies.reduce((acc, tech) => {
             const cat = tech.category || 'Прочее';
@@ -242,7 +221,6 @@ function Statistics() {
         }, {});
     }, [technologies]);
 
-    // 3. Считаем прогресс в процентах
     const progressPercentage = useMemo(() => {
         const total = technologies.length;
         if (total === 0) return 0;
@@ -256,7 +234,6 @@ function Statistics() {
             <h2 style={{ marginBottom: '30px', fontSize: '28px' }}>📊 Аналитика вашего пути</h2>
             
             <div className="stats-grid">
-                {/* Карточка Прогресса */}
                 <div className="stats-card">
                     <h3>Распределение по статусам</h3>
                     <StatusHistogram stats={statusStats} />
@@ -283,7 +260,6 @@ function Statistics() {
                     </div>
                 </div>
 
-                {/* Карточка Категорий */}
                 <div className="stats-card">
                     <h3>Технологии по категориям</h3>
                     <CategoryHistogram categoryStats={categoryStats} />
@@ -312,7 +288,6 @@ function Statistics() {
                 </div>
             </div>
 
-            {/* Карточка с итогами */}
             <div className="stats-grid" style={{ marginTop: '25px' }}>
                 <div className="stats-card">
                     <h3>Общая статистика</h3>

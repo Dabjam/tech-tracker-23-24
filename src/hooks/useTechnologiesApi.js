@@ -1,117 +1,210 @@
-import { useState, useCallback } from 'react';
+// src/hooks/useTechnologiesApi.js
 
-// Моковый API для демонстрации
-const MOCK_RESOURCES_API = {
-    'React': [
-        { title: 'Официальная документация', url: 'https://react.dev', type: 'documentation' },
-        { title: 'React на GitHub', url: 'https://github.com/facebook/react', type: 'github' },
-        { title: 'React Tutorial', url: 'https://react-tutorial.app', type: 'tutorial' }
-    ],
-    'Node.js': [
-        { title: 'Официальный сайт', url: 'https://nodejs.org', type: 'documentation' },
-        { title: 'Node.js API Docs', url: 'https://nodejs.org/api/', type: 'api' },
-        { title: 'npm', url: 'https://www.npmjs.com', type: 'package-manager' }
-    ],
-    'TypeScript': [
-        { title: 'TypeScript Handbook', url: 'https://www.typescriptlang.org/docs/', type: 'documentation' },
-        { title: 'Playground', url: 'https://www.typescriptlang.org/play', type: 'sandbox' }
-    ],
-    'Docker': [
-        { title: 'Docker Docs', url: 'https://docs.docker.com', type: 'documentation' },
-        { title: 'Docker Hub', url: 'https://hub.docker.com', type: 'registry' }
-    ],
-    'GraphQL': [
-        { title: 'GraphQL.org', url: 'https://graphql.org', type: 'documentation' },
-        { title: 'GraphQL Playground', url: 'https://graphql.org/playground/', type: 'sandbox' }
-    ],
-    'MongoDB': [
-        { title: 'MongoDB Docs', url: 'https://docs.mongodb.com', type: 'documentation' },
-        { title: 'MongoDB Atlas', url: 'https://www.mongodb.com/cloud/atlas', type: 'cloud' }
-    ]
-};
+import { useState, useEffect, useCallback, useMemo } from 'react';
 
-// Функция для поиска ресурсов
-const findResourcesInMockApi = (techName) => {
-    if (!techName || techName.trim() === '') return [];
-    
-    const normalizedTechName = techName.toLowerCase();
-    
-    // Ищем точное совпадение
-    for (const [key, resources] of Object.entries(MOCK_RESOURCES_API)) {
-        if (key.toLowerCase() === normalizedTechName) {
-            return resources;
-        }
-    }
-    
-    // Ищем частичное совпадение
-    for (const [key, resources] of Object.entries(MOCK_RESOURCES_API)) {
-        if (key.toLowerCase().includes(normalizedTechName) || 
-            normalizedTechName.includes(key.toLowerCase())) {
-            return resources;
-        }
-    }
-    
-    // Общие ресурсы
-    return [
-        { title: 'MDN Web Docs', url: 'https://developer.mozilla.org', type: 'documentation' },
-        { title: 'Stack Overflow', url: 'https://stackoverflow.com', type: 'qna' },
-        { title: 'GitHub', url: 'https://github.com', type: 'github' }
-    ];
-};
+const LOCAL_STORAGE_KEY = 'techTrackerData'; 
 
-const useTechResourcesApi = () => {
-    const [loading, setLoading] = useState(false);
+const mockTechnologies = [
+    { id: 1, title: 'React', description: 'Библиотека для создания пользовательских интерфейсов', category: 'frontend', difficulty: 'beginner', resources: ['https://react.dev'], status: 'completed', notes: 'Освоены хуки.' },
+    { id: 2, title: 'Node.js', description: 'Среда выполнения JavaScript на сервере', category: 'backend', difficulty: 'intermediate', resources: ['https://nodejs.org'], status: 'in-progress', notes: 'Нужно разобраться с Express.' },
+    { id: 3, title: 'TypeScript', description: 'Типизированное надмножество JavaScript', category: 'language', difficulty: 'intermediate', resources: ['https://www.typescriptlang.org'], status: 'not-started', notes: '' }
+];
+
+function useTechnologiesApi() {
+    const [technologies, setTechnologies] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [resources, setResources] = useState([]);
 
-    // Загрузка ресурсов по названию технологии
-    const fetchResources = useCallback(async (techName) => {
-        if (!techName || techName.trim() === '') {
-            setError('Введите название технологии');
-            return [];
-        }
-        
+    // Функция для генерации уникального ID
+    const generateId = useCallback(() => {
+        return Date.now() + Math.floor(Math.random() * 1000);
+    }, []);
+
+    // 1. Загрузка технологий (API + localStorage)
+    const fetchTechnologies = useCallback(async () => {
         setLoading(true);
         setError(null);
         
         try {
-            // Имитация задержки сети
-            await new Promise(resolve => setTimeout(resolve, 800));
+            await new Promise(resolve => setTimeout(resolve, 1000));
             
-            // Используем моковый API
-            const mockResources = findResourcesInMockApi(techName);
+            const storedData = localStorage.getItem(LOCAL_STORAGE_KEY);
             
-            if (mockResources.length === 0) {
-                setError(`Ресурсы для "${techName}" не найдены`);
+            // ВАЖНОЕ ИЗМЕНЕНИЕ: проверяем специальный флаг, чтобы не загружать мок-данные после очистки
+            const wasCleared = localStorage.getItem('dataCleared');
+            
+            if (storedData && storedData !== '[]' && !wasCleared) {
+                // Если есть сохраненные данные и они не пустые
+                const initialData = JSON.parse(storedData);
+                const validatedData = initialData.map(tech => ({
+                    ...tech,
+                    id: Number(tech.id) || generateId()
+                }));
+                setTechnologies(validatedData);
+            } else if (!wasCleared) {
+                // Только если данные были очищены пользователем явно - не загружаем мок-данные
+                // Вместо этого загружаем пустой массив
+                setTechnologies([]);
+                // Сохраняем пустой массив в localStorage
+                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify([]));
             } else {
-                setResources(mockResources);
+                // Если пользователь очистил данные - показываем пустой массив
+                setTechnologies([]);
             }
             
-            return mockResources;
-            
         } catch (err) {
-            const errorMsg = `Ошибка загрузки: ${err.message}`;
-            setError(errorMsg);
-            console.error('Error fetching resources:', err);
-            return [];
+            console.error('Ошибка загрузки данных:', err);
+            setError('Не удалось загрузить данные.');
+            setTechnologies([]); // Вместо мок-данных показываем пустой массив
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [generateId]);
 
-    // Сброс ресурсов
-    const resetResources = useCallback(() => {
-        setResources([]);
-        setError(null);
+    // 2. Добавление технологии (CREATE)
+    const addTechnology = useCallback(async (techData) => {
+        try {
+            await new Promise(resolve => setTimeout(resolve, 300));
+            
+            const newId = generateId();
+            
+            const newTech = {
+                id: newId,
+                title: techData.title || '',
+                category: techData.category || '',
+                difficulty: techData.difficulty || 'beginner',
+                status: techData.status || 'not-started',
+                description: techData.description || '',
+                notes: techData.notes || '',
+                resources: Array.isArray(techData.resources) ? techData.resources : [],
+                createdAt: new Date().toISOString()
+            };
+
+            setTechnologies(prev => [...prev, newTech]);
+            
+            return newTech;
+
+        } catch (err) {
+            console.error('Error adding technology:', err);
+            throw new Error('Не удалось добавить технологию');
+        }
+    }, [generateId]);
+    
+    // 3. Обновление технологии (UPDATE)
+    const updateTechnology = useCallback((techId, fieldsToUpdate) => {
+        setTechnologies(prev => 
+            prev.map(tech => 
+                tech.id === Number(techId) ? { ...tech, ...fieldsToUpdate } : tech
+            )
+        );
     }, []);
+    
+    // 4. Удаление технологии (DELETE)
+    const deleteTechnology = useCallback((techId) => {
+        setTechnologies(prev => prev.filter(tech => {
+            const techIdNum = Number(techId);
+            const currentTechId = Number(tech.id);
+            return currentTechId !== techIdNum;
+        }));
+    }, []);
+    
+    // 5. Пакетное добавление (для импорта)
+    const batchAddTechnologies = useCallback(async (techsArray) => {
+        try {
+            await new Promise(resolve => setTimeout(resolve, 300));
+            
+            const newTechs = techsArray.map(techData => ({
+                id: generateId(),
+                title: techData.title || '',
+                category: techData.category || '',
+                difficulty: techData.difficulty || 'beginner',
+                status: techData.status || 'not-started',
+                description: techData.description || '',
+                notes: techData.notes || '',
+                resources: Array.isArray(techData.resources) ? techData.resources : [],
+                createdAt: new Date().toISOString()
+            }));
+
+            setTechnologies(prev => [...prev, ...newTechs]);
+            
+            return newTechs;
+
+        } catch (err) {
+            console.error('Error batch adding technologies:', err);
+            throw new Error('Не удалось добавить технологии');
+        }
+    }, [generateId]);
+    
+    // 6. Полное удаление всех данных (НОВАЯ ФУНКЦИЯ)
+    const deleteAllTechnologies = useCallback(() => {
+        setTechnologies([]);
+        // Устанавливаем флаг, что данные были очищены
+        localStorage.setItem('dataCleared', 'true');
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify([]));
+    }, []);
+    
+    // --- Пакетные операции (Quick Actions) ---
+    
+    const markAllCompleted = useCallback(() => {
+        setTechnologies(prev => 
+            prev.map(tech => ({ ...tech, status: 'completed' }))
+        );
+        alert('Все технологии отмечены как "Выполнено"!');
+    }, []);
+    
+    const resetAllStatuses = useCallback(() => {
+        setTechnologies(prev => 
+            prev.map(tech => ({ ...tech, status: 'not-started' }))
+        );
+        alert('Все статусы сброшены на "Не начато"!');
+    }, []);
+    
+    const exportTechnologiesAsJson = useCallback(() => {
+        const jsonString = JSON.stringify(technologies, null, 2);
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `tech_tracker_export_${new Date().toISOString().slice(0, 10)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }, [technologies]);
+    
+    const stats = useMemo(() => {
+        const completed = technologies.filter(t => t.status === 'completed').length;
+        const total = technologies.length;
+        const progressPercentage = total > 0 ? (completed / total) * 100 : 0;
+        return { completed, total, progressPercentage };
+    }, [technologies]);
+
+    useEffect(() => {
+        fetchTechnologies();
+    }, [fetchTechnologies]);
+
+    useEffect(() => {
+        // Сохраняем данные в localStorage при изменении
+        if (technologies.length > 0 || localStorage.getItem('dataCleared') === 'true') {
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(technologies));
+        }
+    }, [technologies]);
 
     return {
-        resources,
+        technologies,
         loading,
         error,
-        fetchResources,
-        resetResources
+        stats,
+        addTechnology,
+        updateTechnology,
+        deleteTechnology,
+        deleteAllTechnologies, // Новая функция для полного удаления
+        batchAddTechnologies,
+        markAllCompleted,
+        resetAllStatuses,
+        exportTechnologiesAsJson,
+        refetch: fetchTechnologies
     };
-};
+}
 
-export default useTechResourcesApi;
+export default useTechnologiesApi;

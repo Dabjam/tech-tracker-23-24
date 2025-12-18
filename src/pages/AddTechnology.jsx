@@ -1,7 +1,8 @@
+// src/pages/AddTechnology.jsx
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useTechnologiesApi from '../hooks/useTechnologiesApi';
-import ResourceLoader from '../components/ResourceLoader';
 
 function AddTechnology() {
     const { addTechnology } = useTechnologiesApi(); 
@@ -71,45 +72,17 @@ function AddTechnology() {
         }
     };
 
-    const handleResourceSelect = (resource) => {
-        const currentResources = formData.resources 
-            ? formData.resources.split(',').map(r => r.trim()).filter(r => r !== '')
-            : [];
-        
-        const isAlreadyAdded = currentResources.some(
-            existing => existing === resource.url
-        );
-        
-        if (!isAlreadyAdded) {
-            const newResources = [...currentResources, resource.url];
-            setFormData(prev => ({
-                ...prev,
-                resources: newResources.join(', ')
-            }));
-            
-            alert(`✅ Ресурс "${resource.title}" добавлен!`);
-        } else {
-            alert('⚠️ Этот ресурс уже добавлен');
-        }
-    };
-
-    const existingResources = formData.resources 
-        ? formData.resources.split(',').map(r => r.trim()).filter(r => r !== '')
-        : [];
-
     return (
         <div className="add-tech-page">
             <h2>➕ Добавить новую технологию</h2>
             
             {error && (
                 <div className="error-message" style={{
-                    backgroundColor: 'rgba(244, 67, 54, 0.1)',
-                    borderLeft: '4px solid var(--color-danger)',
-                    padding: '15px',
-                    marginBottom: '20px',
+                    backgroundColor: 'var(--color-danger)',
+                    color: 'white',
+                    padding: '10px',
                     borderRadius: '8px',
-                    color: 'var(--color-danger)',
-                    fontWeight: '500'
+                    marginBottom: '20px'
                 }}>
                     ❌ {error}
                 </div>
@@ -196,29 +169,19 @@ function AddTechnology() {
                 </div>
 
                 <div className="form-group">
-                    <label htmlFor="resources">Ссылки на ресурсы:</label>
-                    <div style={{ marginBottom: '10px' }}>
-                        <input
-                            type="text"
-                            id="resources"
-                            name="resources"
-                            value={formData.resources}
-                            onChange={handleChange}
-                            placeholder="https://react.dev, https://docs.docker.com"
-                            disabled={isSubmitting}
-                            style={{ width: '100%', marginBottom: '10px' }}
-                        />
-                        <small style={{ color: 'var(--color-subtext)', fontSize: '12px' }}>
-                            Укажите ссылки через запятую или используйте загрузку из API ниже
-                        </small>
-                    </div>
-                    
-                    {/* Компонент загрузки ресурсов из API */}
-                    <ResourceLoader 
-                        techName={formData.title}
-                        onResourceSelect={handleResourceSelect}
-                        existingResources={existingResources}
+                    <label htmlFor="resources">Ссылки на ресурсы (через запятую):</label>
+                    <input
+                        type="text"
+                        id="resources"
+                        name="resources"
+                        value={formData.resources}
+                        onChange={handleChange}
+                        placeholder="https://react.dev, https://docs.docker.com"
+                        disabled={isSubmitting}
                     />
+                    <small style={{ color: 'var(--color-subtext)', fontSize: '12px', marginTop: '5px' }}>
+                        Укажите ссылки через запятую
+                    </small>
                 </div>
 
                 <div className="form-group">
@@ -241,21 +204,7 @@ function AddTechnology() {
                         className="btn btn-primary"
                         disabled={isSubmitting}
                     >
-                        {isSubmitting ? (
-                            <>
-                                <span className="loading-spinner" style={{
-                                    display: 'inline-block',
-                                    width: '16px',
-                                    height: '16px',
-                                    border: '2px solid rgba(255,255,255,0.3)',
-                                    borderTopColor: 'white',
-                                    borderRadius: '50%',
-                                    animation: 'spin 1s linear infinite',
-                                    marginRight: '8px'
-                                }}></span>
-                                Добавление...
-                            </>
-                        ) : '💾 Сохранить технологию'}
+                        {isSubmitting ? 'Добавление...' : 'Сохранить технологию'}
                     </button>
                     
                     <button 
@@ -269,23 +218,6 @@ function AddTechnology() {
                 </div>
 
             </form>
-            
-            <div style={{ 
-                marginTop: '30px', 
-                padding: '15px', 
-                backgroundColor: 'rgba(90, 125, 255, 0.05)', 
-                borderRadius: '8px',
-                fontSize: '14px'
-            }}>
-                <h4 style={{ color: 'var(--color-primary)', marginBottom: '10px' }}>
-                    ℹ️ Информация о загрузке ресурсов
-                </h4>
-                <ul style={{ marginLeft: '15px', color: 'var(--color-subtext)' }}>
-                    <li>Введите название технологии, чтобы активировать кнопку загрузки ресурсов</li>
-                    <li>Система автоматически найдет документацию, руководства и полезные ссылки</li>
-                    <li>Выберите нужные ресурсы и добавьте их одним кликом</li>
-                </ul>
-            </div>
         </div>
     );
 }
