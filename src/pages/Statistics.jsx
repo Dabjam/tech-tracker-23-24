@@ -205,6 +205,7 @@ const CategoryHistogram = ({ categoryStats }) => {
 
 function Statistics() {
     const { technologies, loading } = useTechnologiesApi();
+    const isMobile = window.innerWidth < 768;
 
     const statusStats = useMemo(() => {
         return technologies.reduce((acc, tech) => {
@@ -230,54 +231,58 @@ function Statistics() {
     if (loading) return <div className="loading">Загрузка данных...</div>;
 
     return (
-        <div className="statistics-page">
-            <h2 style={{ marginBottom: '30px', fontSize: '28px' }}>📊 Аналитика вашего пути</h2>
+        <div className="statistics-page" style={{ padding: isMobile ? '15px' : '20px' }}>
+            <h2 style={{ marginBottom: '30px', fontSize: isMobile ? '1.5rem' : '28px' }}>📊 Аналитика</h2>
             
             <div className="stats-grid">
                 <div className="stats-card">
-                    <h3>Распределение по статусам</h3>
-                    <StatusHistogram stats={statusStats} />
+                    <h3 style={{ fontSize: isMobile ? '1.1rem' : '1.3rem', marginBottom: '15px' }}>📊 По статусам</h3>
+                    <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                        <StatusHistogram stats={statusStats} />
+                    </div>
                     
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
-                        <div className="stat-item">
-                            <div style={{ fontSize: '24px', fontWeight: 'bold', color: 'var(--color-success)' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr 1fr' : 'repeat(3, 1fr)', gap: isMobile ? '8px' : '15px', marginTop: '20px' }}>
+                        <div className="stat-item" style={{ textAlign: 'center', padding: isMobile ? '8px' : '10px' }}>
+                            <div style={{ fontSize: isMobile ? '18px' : '24px', fontWeight: 'bold', color: 'var(--color-success)' }}>
                                 {statusStats.completed}
                             </div>
-                            <div style={{ fontSize: '12px', color: 'var(--color-subtext)' }}>Завершено</div>
+                            <div style={{ fontSize: isMobile ? '11px' : '12px', color: 'var(--color-subtext)' }}>✅ Завершено</div>
                         </div>
-                        <div className="stat-item">
-                            <div style={{ fontSize: '24px', fontWeight: 'bold', color: 'var(--color-warning)' }}>
+                        <div className="stat-item" style={{ textAlign: 'center', padding: isMobile ? '8px' : '10px' }}>
+                            <div style={{ fontSize: isMobile ? '18px' : '24px', fontWeight: 'bold', color: 'var(--color-warning)' }}>
                                 {statusStats['in-progress']}
                             </div>
-                            <div style={{ fontSize: '12px', color: 'var(--color-subtext)' }}>В процессе</div>
+                            <div style={{ fontSize: isMobile ? '11px' : '12px', color: 'var(--color-subtext)' }}>🔄 В процессе</div>
                         </div>
-                        <div className="stat-item">
-                            <div style={{ fontSize: '24px', fontWeight: 'bold', color: 'var(--color-danger)' }}>
+                        <div className="stat-item" style={{ textAlign: 'center', padding: isMobile ? '8px' : '10px' }}>
+                            <div style={{ fontSize: isMobile ? '18px' : '24px', fontWeight: 'bold', color: 'var(--color-danger)' }}>
                                 {statusStats['not-started']}
                             </div>
-                            <div style={{ fontSize: '12px', color: 'var(--color-subtext)' }}>Не начато</div>
+                            <div style={{ fontSize: isMobile ? '11px' : '12px', color: 'var(--color-subtext)' }}>📁 Не начато</div>
                         </div>
                     </div>
                 </div>
 
                 <div className="stats-card">
-                    <h3>Технологии по категориям</h3>
-                    <CategoryHistogram categoryStats={categoryStats} />
+                    <h3 style={{ fontSize: isMobile ? '1.1rem' : '1.3rem', marginBottom: '15px' }}>🏷️ По категориям</h3>
+                    <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                        <CategoryHistogram categoryStats={categoryStats} />
+                    </div>
                     
                     <div style={{ marginTop: '20px', paddingTop: '15px', borderTop: '1px solid var(--border-color)' }}>
-                        <h4 style={{ fontSize: '14px', marginBottom: '10px', color: 'var(--color-subtext)' }}>
-                            Всего категорий: {Object.keys(categoryStats).length}
+                        <h4 style={{ fontSize: isMobile ? '12px' : '14px', marginBottom: '10px', color: 'var(--color-subtext)' }}>
+                            Всего: {Object.keys(categoryStats).length} категорий
                         </h4>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: isMobile ? '6px' : '8px' }}>
                             {Object.entries(categoryStats).map(([name, count]) => (
                                 <span 
                                     key={name}
                                     style={{
                                         backgroundColor: 'var(--color-primary)',
                                         color: 'white',
-                                        padding: '4px 10px',
+                                        padding: isMobile ? '3px 8px' : '4px 10px',
                                         borderRadius: '20px',
-                                        fontSize: '12px'
+                                        fontSize: isMobile ? '11px' : '12px'
                                     }}
                                 >
                                     {name}: {count}
@@ -290,34 +295,34 @@ function Statistics() {
 
             <div className="stats-grid" style={{ marginTop: '25px' }}>
                 <div className="stats-card">
-                    <h3>Общая статистика</h3>
-                    <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', height: '120px' }}>
-                        <div style={{ textAlign: 'center' }}>
-                            <div style={{ fontSize: '36px', fontWeight: 'bold', color: 'var(--color-primary)' }}>
+                    <h3 style={{ fontSize: isMobile ? '1.1rem' : '1.3rem', marginBottom: '15px' }}>📈 Общая статистика</h3>
+                    <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)', gap: isMobile ? '12px' : '20px', height: 'auto', minHeight: isMobile ? '100px' : '120px' }}>
+                        <div style={{ textAlign: 'center', padding: isMobile ? '10px' : '15px' }}>
+                            <div style={{ fontSize: isMobile ? '24px' : '36px', fontWeight: 'bold', color: 'var(--color-primary)' }}>
                                 {technologies.length}
                             </div>
-                            <div style={{ fontSize: '14px', color: 'var(--color-subtext)' }}>Всего технологий</div>
+                            <div style={{ fontSize: isMobile ? '12px' : '14px', color: 'var(--color-subtext)', marginTop: '5px' }}>Всего</div>
                         </div>
-                        <div style={{ textAlign: 'center' }}>
-                            <div style={{ fontSize: '36px', fontWeight: 'bold', color: 'var(--color-success)' }}>
+                        <div style={{ textAlign: 'center', padding: isMobile ? '10px' : '15px' }}>
+                            <div style={{ fontSize: isMobile ? '24px' : '36px', fontWeight: 'bold', color: 'var(--color-success)' }}>
                                 {progressPercentage.toFixed(1)}%
                             </div>
-                            <div style={{ fontSize: '14px', color: 'var(--color-subtext)' }}>Общий прогресс</div>
+                            <div style={{ fontSize: isMobile ? '12px' : '14px', color: 'var(--color-subtext)', marginTop: '5px' }}>Прогресс</div>
                         </div>
-                        <div style={{ textAlign: 'center' }}>
-                            <div style={{ fontSize: '36px', fontWeight: 'bold', color: 'var(--color-warning)' }}>
+                        <div style={{ textAlign: 'center', padding: isMobile ? '10px' : '15px', gridColumn: isMobile ? 'span 2' : 'auto' }}>
+                            <div style={{ fontSize: isMobile ? '24px' : '36px', fontWeight: 'bold', color: 'var(--color-warning)' }}>
                                 {statusStats['in-progress']}
                             </div>
-                            <div style={{ fontSize: '14px', color: 'var(--color-subtext)' }}>В активной работе</div>
+                            <div style={{ fontSize: isMobile ? '12px' : '14px', color: 'var(--color-subtext)', marginTop: '5px' }}>В работе</div>
                         </div>
                     </div>
                 </div>
 
                 <div className="stats-card">
-                    <h3>Прогресс изучения</h3>
-                    <div style={{ padding: '20px 0' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                            <span>Завершено</span>
+                    <h3 style={{ fontSize: isMobile ? '1.1rem' : '1.3rem', marginBottom: '15px' }}>📊 Прогресс</h3>
+                    <div style={{ padding: isMobile ? '12px 0' : '20px 0' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: isMobile ? '12px' : '14px' }}>
+                            <span>✅ Завершено</span>
                             <span style={{ fontWeight: 'bold' }}>{statusStats.completed}</span>
                         </div>
                         <div className="progress-bar-container">

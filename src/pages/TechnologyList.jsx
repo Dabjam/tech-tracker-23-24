@@ -8,6 +8,7 @@ import RoadmapImporter from '../components/RoadmapImporter';
 function TechnologyList() {
     const api = useTechnologiesApi();
     const [searchQuery, setSearchQuery] = useState('');
+    const isMobile = window.innerWidth < 768;
 
     const filteredTechnologies = api.technologies.filter(tech => 
         tech.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -19,32 +20,66 @@ function TechnologyList() {
         return priority[a.status] - priority[b.status];
     });
 
+    const containerStyle = {
+        display: 'grid',
+        gridTemplateColumns: isMobile ? '1fr' : '1fr 350px',
+        gap: isMobile ? '20px' : '30px',
+        padding: isMobile ? '15px' : '20px'
+    };
+
+    const headerStyle = {
+        display: 'flex',
+        flexDirection: isMobile ? 'column' : 'row',
+        justifyContent: 'space-between',
+        alignItems: isMobile ? 'flex-start' : 'center',
+        marginBottom: '25px',
+        gap: isMobile ? '15px' : '0'
+    };
+
+    const headingStyle = {
+        color: 'var(--color-text)',
+        fontSize: isMobile ? '1.8rem' : '2rem',
+        margin: '0'
+    };
+
+    const buttonStyle = {
+        padding: isMobile ? '12px 18px' : '10px 20px',
+        textDecoration: 'none',
+        borderRadius: '8px',
+        fontWeight: 'bold',
+        width: isMobile ? '100%' : 'auto',
+        fontSize: isMobile ? '14px' : '16px'
+    };
+
+    const searchStyle = {
+        width: '100%',
+        padding: isMobile ? '12px' : '15px',
+        borderRadius: '12px',
+        border: '2px solid var(--border-color)',
+        fontSize: isMobile ? '14px' : '16px',
+        outline: 'none',
+        background: 'var(--color-card-bg)',
+        color: 'var(--color-text)',
+        marginBottom: '20px'
+    };
+
     return (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '30px', padding: '20px' }}>
+        <div style={containerStyle}>
             <section>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
-                    <h1 style={{ color: 'var(--color-text)' }}>Мои технологии</h1>
-                    <Link to="/add" className="btn btn-primary" style={{ padding: '10px 20px', textDecoration: 'none', borderRadius: '8px', fontWeight: 'bold' }}>
+                <div style={headerStyle}>
+                    <h1 style={headingStyle}>Мои технологии</h1>
+                    <Link to="/add" className="btn btn-primary touch-btn" style={buttonStyle}>
                         ➕ Добавить технологию
                     </Link>
                 </div>
 
-                <div style={{ marginBottom: '20px' }}>
+                <div>
                     <input 
                         type="text"
                         placeholder="Поиск по названию..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        style={{ 
-                            width: '100%', 
-                            padding: '15px', 
-                            borderRadius: '12px', 
-                            border: '2px solid var(--border-color)', 
-                            fontSize: '16px', 
-                            outline: 'none',
-                            background: 'var(--color-card-bg)', 
-                            color: 'var(--color-text)'      
-                        }}
+                        style={searchStyle}
                     />
                 </div>
 
@@ -60,10 +95,11 @@ function TechnologyList() {
                     ) : (
                         <div style={{ 
                             textAlign: 'center', 
-                            padding: '50px', 
+                            padding: isMobile ? '30px 15px' : '50px',
                             background: 'var(--color-card-bg)', 
                             color: 'var(--color-text)',       
-                            borderRadius: '15px' 
+                            borderRadius: '15px',
+                            fontSize: isMobile ? '14px' : '16px'
                         }}>
                             Ничего не найдено
                         </div>
@@ -71,7 +107,7 @@ function TechnologyList() {
                 </div>
             </section>
 
-            <aside>
+            <aside style={{ display: isMobile ? 'none' : 'block' }}>
                 <QuickActions 
                     technologies={api.technologies}
                     updateAllStatuses={api.updateAllStatuses}

@@ -121,35 +121,71 @@ function LoginScreen({ onLogin }) {
 }
 
 // СТИЛИ
+const isMobileApp = window.innerWidth < 768;
+
 const modalOverlayStyle = {
-  display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '70vh'
+  display: 'flex', 
+  alignItems: 'center', 
+  justifyContent: 'center', 
+  minHeight: '70vh',
+  padding: '15px'
 };
 
 const modalContentStyle = {
-  background: 'var(--color-card-bg)', padding: '40px', borderRadius: '24px', 
-  boxShadow: 'var(--shadow-deep)', width: '100%', maxWidth: '400px', 
-  textAlign: 'center', border: '1px solid var(--border-color)'
+  background: 'var(--color-card-bg)', 
+  padding: isMobileApp ? '25px' : '40px', 
+  borderRadius: isMobileApp ? '16px' : '24px', 
+  boxShadow: 'var(--shadow-deep)', 
+  width: '100%', 
+  maxWidth: isMobileApp ? '90vw' : '400px', 
+  textAlign: 'center', 
+  border: '1px solid var(--border-color)'
 };
 
 const inputStyle = {
-  width: '100%', padding: '14px', borderRadius: '12px', border: '1px solid var(--border-color)',
-  fontSize: '16px', marginBottom: '15px', boxSizing: 'border-box', outline: 'none',
-  background: 'var(--color-bg)', color: 'var(--color-text)'
+  width: '100%', 
+  padding: isMobileApp ? '12px' : '14px', 
+  borderRadius: isMobileApp ? '8px' : '12px', 
+  border: '1px solid var(--border-color)',
+  fontSize: '16px', 
+  marginBottom: '15px', 
+  boxSizing: 'border-box', 
+  outline: 'none',
+  background: 'var(--color-bg)', 
+  color: 'var(--color-text)'
 };
 
 const activeRoleBtn = {
-  flex: 1, padding: '12px', borderRadius: '10px', border: 'none',
-  background: '#2563eb', color: '#fff', fontWeight: 'bold', cursor: 'pointer'
+  flex: 1, 
+  padding: isMobileApp ? '10px' : '12px', 
+  borderRadius: isMobileApp ? '8px' : '10px', 
+  border: 'none',
+  background: '#2563eb', 
+  color: '#fff', 
+  fontWeight: 'bold', 
+  cursor: 'pointer',
+  fontSize: isMobileApp ? '13px' : '14px'
 };
 
 const inactiveRoleBtn = {
-  flex: 1, padding: '12px', borderRadius: '10px', border: '1px solid #e2e8f0',
-  background: '#f8fafc', color: '#64748b', cursor: 'pointer'
+  flex: 1, 
+  padding: isMobileApp ? '10px' : '12px', 
+  borderRadius: isMobileApp ? '8px' : '10px', 
+  border: '1px solid #e2e8f0',
+  background: '#f8fafc', 
+  color: '#64748b', 
+  cursor: 'pointer',
+  fontSize: isMobileApp ? '13px' : '14px'
 };
 
 const cancelLinkStyle = {
-  background: 'none', border: 'none', color: '#94a3b8', marginTop: '20px', 
-  cursor: 'pointer', textDecoration: 'underline'
+  background: 'none', 
+  border: 'none', 
+  color: '#94a3b8', 
+  marginTop: '20px', 
+  cursor: 'pointer', 
+  textDecoration: 'underline',
+  fontSize: isMobileApp ? '13px' : '14px'
 };
 
 export default App;

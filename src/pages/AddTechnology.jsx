@@ -23,22 +23,22 @@ function AddTechnology() {
     // Стили, использующие CSS-переменные темы
     const containerStyle = { 
         maxWidth: '600px', 
-        margin: '40px auto', 
-        padding: '30px', 
-        background: 'var(--color-card-bg)', // Фон карточки
-        borderRadius: '20px', 
-        border: '1px solid var(--border-color)', // Граница
+        margin: '20px auto', 
+        padding: '20px', 
+        background: 'var(--color-card-bg)',
+        borderRadius: '16px', 
+        border: '1px solid var(--border-color)',
         boxShadow: 'var(--shadow-light)',
-        color: 'var(--color-text)' // Цвет текста заголовков
+        color: 'var(--color-text)'
     };
 
     const inputStyle = {
         width: '100%',
         padding: '14px',
-        borderRadius: '12px',
+        borderRadius: '8px',
         border: '1px solid var(--border-color)',
-        background: 'var(--color-bg)', // Фон инпута (темнее или светлее базы)
-        color: 'var(--color-text)', // Цвет вводимого текста
+        background: 'var(--color-bg)',
+        color: 'var(--color-text)',
         fontSize: '16px',
         boxSizing: 'border-box',
         outline: 'none',
@@ -52,6 +52,13 @@ function AddTechnology() {
         color: 'var(--color-subtext)',
         marginBottom: '8px',
         marginLeft: '4px'
+    };
+
+    const buttonContainerStyle = {
+        display: 'flex',
+        gap: '10px',
+        marginTop: '20px',
+        flexDirection: 'row'
     };
 
     return (
@@ -95,19 +102,19 @@ function AddTechnology() {
                         />
                     </div>
 
-                    <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                    <div style={buttonContainerStyle}>
                         <button 
                             type="submit" 
                             className="btn btn-primary" 
-                            style={{ flex: 2, padding: '15px', fontWeight: 'bold' }}
+                            style={{ flex: 2, padding: '12px', fontWeight: 'bold' }}
                         >
-                            Добавить в список
+                            Добавить
                         </button>
                         <button 
                             type="button" 
                             onClick={() => navigate('/technologies')}
                             className="btn btn-outline" 
-                            style={{ flex: 1, padding: '15px' }}
+                            style={{ flex: 1, padding: '12px' }}
                         >
                             Отмена
                         </button>
